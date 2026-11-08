@@ -1,0 +1,18 @@
+.annotated-text {
+  white-space: pre-wrap; /* keep the original line breaks */
+  font-size: 18px;
+  line-height: 2.2; /* leaves room under each line for stacked underlines later */
+  max-width: 70ch;
+}
+
+.token.annotated {
+  background: color-mix(in srgb, var(--entity-color) 18%, transparent);
+  border-bottom: 3px solid var(--entity-color);
+  border-radius: 2px;
+}
+
+/* Temporary marker for words in 2+ entities; replace with stacked underlines (step 3). */
+.token.overlap {
+  outline: 1.5px dotted var(--entity-color);
+  outline-offset: 2px;
+}
