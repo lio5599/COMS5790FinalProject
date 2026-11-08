@@ -1,18 +1,75 @@
 .annotated-text {
   white-space: pre-wrap; /* keep the original line breaks */
   font-size: 18px;
-  line-height: 2.2; /* leaves room under each line for stacked underlines later */
+  line-height: 1.6;
   max-width: 70ch;
 }
 
-.token.annotated {
-  background: color-mix(in srgb, var(--entity-color) 18%, transparent);
-  border-bottom: 3px solid var(--entity-color);
-  border-radius: 2px;
+/* Words (and spaces inside an entity) stack their text above their bars. */
+.token,
+.gap {
+  display: inline-block;
+  margin-bottom: 6px; /* breathing room between lines of text */
+  border-radius: 3px;
 }
 
-/* Temporary marker for words in 2+ entities; replace with stacked underlines (step 3). */
-.token.overlap {
-  outline: 1.5px dotted var(--entity-color);
-  outline-offset: 2px;
+/* Pieces that touch ("cholesterol." or "(ALT)") plus any barred space after
+   them, kept together on one line. A line never starts with punctuation
+   that belongs to the previous word, or with a stray space. */
+.unit {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+/* One bar per row. The element is 5px tall so it's easy to point at, but
+   only the bottom 3px is painted (background-clip: content-box), which
+   leaves the 2px gap between rows. Empty bars keep their space so rows
+   line up across words. */
+.bar {
+  display: block;
+  box-sizing: border-box;
+  height: 5px;
+  padding-top: 2px;
+  background-clip: content-box;
+  margin-right: -1px; /* overlap the next word's bar to hide hairline seams */
+}
+
+/* Dashed bridge through the gap of a discontinuous entity. The dashes are a
+   repeating background (color set inline), not a border, so the bar is
+   exactly the same size as a solid one. Borders get rounded to whole screen
+   pixels at 125%/150% display scaling, which would knock rows out of line. */
+.bar.bridge {
+  background-size: 8px 100%;
+  /* Line the dash pattern up with the window instead of each element, so
+     dashes stay evenly spaced across words and spaces instead of restarting
+     at every element. The dashes are vertical stripes, so scrolling up and
+     down doesn't change how they look. */
+  background-attachment: fixed;
+}
+
+/* Anything that belongs to an entity can be pointed at and clicked. */
+.token.annotated,
+.gap[data-entities],
+.bar[data-entity] {
+  cursor: pointer;
+}
+
+/* Hover linking: while something is highlighted, every other underline fades. */
+.bar[data-entity] {
+  transition: opacity 0.12s;
+}
+.annotated-text.has-highlight .bar[data-entity]:not(.hl) {
+  opacity: 0.2;
+}
+
+/* Light tint behind the words of the highlighted entity. */
+.token.hl,
+.gap.hl {
+  background-color: color-mix(in srgb, var(--tint) 16%, transparent);
+}
+
+/* Pieces of an entity the user is still building (Person B's state). */
+.token.pending {
+  outline: 2px dashed #5f5e5a;
+  outline-offset: 1px;
 }

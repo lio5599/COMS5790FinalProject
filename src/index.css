@@ -9,9 +9,47 @@ body {
 }
 
 .app {
-  max-width: 900px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+}
+
+/* Text on the left, entity list on the right; stacked on narrow screens. */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.workspace .entity-list {
+  position: sticky; /* the list stays in view while a long text scrolls */
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspace .entity-list {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Development panel at the bottom: what the display reports. */
+.dev-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  color: #5f5e5a;
 }
 
 .app-header {
@@ -30,7 +68,8 @@ body {
 
 .legend {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
   list-style: none;
   padding: 0;
   margin: 0 0 1.5rem;
